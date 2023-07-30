@@ -11,16 +11,22 @@ public class TournamentStats {
     private static final int SORT_BY_FIRST_NAME = 1;
     private static final int SORT_BY_LAST_NAME = 2;
     private static final int SORT_BY_SCORE = 3;
+    private static final int ASCENDING = 1;
+    private static final int DESCENDING = 2;
     private static final String FILE_NAME = "stats.csv";
 
     void run(Scanner scanner) {
         List<Player> players = addPlayers(scanner);
-        int option = getSortOption(scanner);
-        switch (option) {
+        int parameterOption = getParameterOption(scanner);
+        int sortOption = getSortOption(scanner);
+        switch (parameterOption) {
             case SORT_BY_FIRST_NAME -> players.sort(new FirstNamePlayerComparator());
             case SORT_BY_LAST_NAME -> players.sort(new LastNamePlayerComparator());
             case SORT_BY_SCORE -> players.sort(new ScorePlayerComparator());
             default -> Collections.sort(players);
+        }
+        if (sortOption == DESCENDING) {
+            Collections.reverse(players);
         }
         if (saveToFile(players)) {
             System.out.printf("Dane posortowano i zapisano do pliku %s.%n", FILE_NAME);
@@ -50,14 +56,28 @@ public class TournamentStats {
         return players;
     }
 
-    private int getSortOption(Scanner scanner) {
+    private int getParameterOption(Scanner scanner) {
         boolean isInputCorrect = false;
         int option = SORT_BY_SCORE;
-        while(!isInputCorrect) {
+        while (!isInputCorrect) {
             System.out.println("Po jakim parametrze posortować? (1 - imię, 2 - nazwisko, 3 - wynik)");
             option = scanner.nextInt();
             scanner.nextLine();
             if (option == SORT_BY_FIRST_NAME || option == SORT_BY_LAST_NAME || option == SORT_BY_SCORE) {
+                isInputCorrect = true;
+            }
+        }
+        return option;
+    }
+
+    private int getSortOption(Scanner scanner) {
+        boolean isInputCorrect = false;
+        int option = ASCENDING;
+        while (!isInputCorrect) {
+            System.out.println("Sortować rosnąco czy malejąco? (1 - rosnąco, 2 - malejąco)");
+            option = scanner.nextInt();
+            scanner.nextLine();
+            if (option == ASCENDING || option == DESCENDING) {
                 isInputCorrect = true;
             }
         }
