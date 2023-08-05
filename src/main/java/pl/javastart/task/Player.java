@@ -1,8 +1,6 @@
 package pl.javastart.task;
 
-import java.util.Comparator;
-
-public class Player implements Comparable<Player> {
+public class Player {
     private String firstName;
     private String lastName;
     private int score;
@@ -23,10 +21,5 @@ public class Player implements Comparable<Player> {
 
     public int getScore() {
         return score;
-    }
-
-    @Override
-    public int compareTo(Player p) {
-        return Integer.compare(score, p.score);
     }
 }

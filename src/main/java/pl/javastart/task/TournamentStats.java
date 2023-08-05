@@ -20,18 +20,24 @@ public class TournamentStats {
         int parameterOption = getParameterOption(scanner);
         int sortOption = getSortOption(scanner);
         switch (parameterOption) {
-            case SORT_BY_FIRST_NAME -> players.sort(new FirstNamePlayerComparator());
-            case SORT_BY_LAST_NAME -> players.sort(new LastNamePlayerComparator());
-            case SORT_BY_SCORE -> players.sort(new ScorePlayerComparator());
-            default -> Collections.sort(players);
-        }
-        if (sortOption == DESCENDING) {
-            Collections.reverse(players);
+            case SORT_BY_FIRST_NAME -> sort(players, new FirstNamePlayerComparator(), sortOption);
+            case SORT_BY_LAST_NAME -> sort(players, new LastNamePlayerComparator(), sortOption);
+            case SORT_BY_SCORE -> sort(players, new ScorePlayerComparator(), sortOption);
+            default -> throw new RuntimeException("Wystąpił błąd przy wyborze parametru");
         }
         if (saveToFile(players)) {
             System.out.printf("Dane posortowano i zapisano do pliku %s.%n", FILE_NAME);
         } else {
             System.out.println("Wystąpił problem z zapisywaniem");
+        }
+    }
+
+    private void sort(List<Player> players, Comparator<Player> comparator, int sortOption) {
+        if (sortOption == ASCENDING) {
+            players.sort(comparator);
+        } else {
+            Comparator<Player> reversedComparator = comparator.reversed();
+            players.sort(reversedComparator);
         }
     }
 
@@ -60,7 +66,8 @@ public class TournamentStats {
         boolean isInputCorrect = false;
         int option = SORT_BY_SCORE;
         while (!isInputCorrect) {
-            System.out.println("Po jakim parametrze posortować? (1 - imię, 2 - nazwisko, 3 - wynik)");
+            System.out.printf("Po jakim parametrze posortować? (%d - imię, %d - nazwisko, %d - wynik)%n",
+                    SORT_BY_FIRST_NAME, SORT_BY_LAST_NAME, SORT_BY_SCORE);
             option = scanner.nextInt();
             scanner.nextLine();
             if (option == SORT_BY_FIRST_NAME || option == SORT_BY_LAST_NAME || option == SORT_BY_SCORE) {
@@ -74,7 +81,8 @@ public class TournamentStats {
         boolean isInputCorrect = false;
         int option = ASCENDING;
         while (!isInputCorrect) {
-            System.out.println("Sortować rosnąco czy malejąco? (1 - rosnąco, 2 - malejąco)");
+            System.out.printf("Sortować rosnąco czy malejąco? (%d - rosnąco, %d - malejąco)%n",
+                    ASCENDING, DESCENDING);
             option = scanner.nextInt();
             scanner.nextLine();
             if (option == ASCENDING || option == DESCENDING) {
